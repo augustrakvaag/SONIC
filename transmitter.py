@@ -18,8 +18,7 @@ def bytestring_to_audio(bytestring: str):
                     output=True)
     
     for bit in bytestring:
-        time.sleep(0.1)
-        frequency = 440.0 if int(bit) == 0 else 256.0
+        frequency = 440.0 if int(bit) == 0 else 0
 
         # Generate sine wave data
         t = np.linspace(0, duration, int(sampling_rate * duration), endpoint=False)
@@ -40,6 +39,6 @@ def bytestring_to_audio(bytestring: str):
 
 def transmit(message: str):
     message_bytes = encode(message)
-    bytestring_to_audio(message_bytes)
+    bytestring_to_audio("10101011"+message_bytes+"11101001" )
 
 transmit("Hello")
