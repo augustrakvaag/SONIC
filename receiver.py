@@ -22,9 +22,11 @@ stream = p.open(format=pyaudio.paInt16,
 
 def listen(time):
     frames = []
+    print("Listening...")
     for i in range(0, int(sampling_rate / chunk * time)):
         data = stream.read(chunk)
         frames.append(data)
+    print("Recording done")
     samples = frames_to_list(frames)
     return samples
 
@@ -51,6 +53,7 @@ def get_frequencies(samples, sampling_rate):
 
 
 def plot_spectrogram(samples, sampling_rate):
+    print("Creating spectrogram")
     # Compute spectrogram
     samples = np.array(samples)
     f, t, Sxx = spectrogram(samples, fs=sampling_rate, nperseg=1024, noverlap=512)
