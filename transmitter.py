@@ -18,7 +18,7 @@ def bytestring_to_audio(bytestring: str):
                     output=True)
     
     for bit in bytestring:
-        frequency = 440.0 if int(bit) == 0 else 0
+        frequency = 440.0 if int(bit) == 1 else 0
 
         # Generate sine wave data
         t = np.linspace(0, duration, int(sampling_rate * duration), endpoint=False)

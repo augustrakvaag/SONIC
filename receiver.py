@@ -22,7 +22,6 @@ stream = p.open(format=pyaudio.paInt16,
 
 def listen(time):
     frames = []
-    print("Listening...")
     for i in range(0, int(sampling_rate / chunk * time)):
         data = stream.read(chunk)
         frames.append(data)
@@ -78,20 +77,34 @@ def decode_frequency(samples, sampling_rate, frequency, threshold=None):
     for power in powers:
         bit = 1 if power > threshold else 0
         bits.append(bit)
-    return bits, powers, threshold
+    return bits
 
 def main(time):
     print(f"Listening {time} seconds...")
     samples = listen(time)
 
-    bits, powers, thr = decode_frequency(samples, sampling_rate, 440.0)
+    bits = decode_frequency(samples, sampling_rate, 440.0)
 
-    print("powers:", powers)
-    print("auto threshold:", thr)
     print("decoded bits:", bits)
+
+    bits_str = ''.join(str(bit) for bit in bits)
+    start = bits_str.find("10101011")+8
+    end = bits_str.find("11101001",start)
+    if start == -1 or end == -1:
+        print("Start or end marker not found. Transmission failed.")
+        return
+    else:
+        message_bits = bits_str[start:end]
+        for i in range(0, len(message_bits), 8):
+            byte = message_bits[i:i+8]
+            if len(byte) < 8:
+                continue
+            char = chr(int(byte, 2))
+            print(char, end="")
+
 
     stream.stop_stream()
     stream.close()
     p.terminate()
 
-main(10)
+main(30)
